@@ -1,0 +1,4 @@
+dialogs/libqt4_plugin_la-ml_configuration.moc.lo: \
+ dialogs/ml_configuration.moc.cpp /usr/include/stdc-predef.h
+
+/usr/include/stdc-predef.h:

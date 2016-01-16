@@ -1,0 +1,151 @@
+commit ea01d28cbfb56f111f5c90a999716ef3937e6860
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Feb 26 21:25:44 2015 +0100
+
+    Update NEWS
+
+commit d785c65b6a9e809568f69aef0fa529f39f8b5923
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Feb 12 11:17:22 2015 +0100
+
+    demux: ogg: check packets header size (fix #13875)
+    
+    (cherry picked from commit 0b37fc45954b2da51e452bb7111f32fa61d8edc5)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 430e3207d65f1e50bd77d27960edae61f3c04060
+Author: Gabriel de Perthuis <g2p.code@gmail.com>
+Date:   Mon Sep 15 12:35:46 2014 +0200
+
+    Prevent potential null pointer dereference in zip access
+    
+    Close #12149
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 3c53c13138225c4b2414ab8358847197cf29b718)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit ea750e57b5aafee751905849539cd190ed7dcc4d
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Jan 24 09:54:31 2015 +0100
+
+    2015
+    
+    Still alive!
+    
+    (cherry picked from commit d8976582c45911a2ca4125854cd85780721184e9)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit b5e009a486e42a1483d0ff053b4196a1f8eb9dec
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Nov 15 12:49:22 2014 +0200
+
+    SRTP: integer overflow
+    
+    (cherry picked from commit e76f990e0ba00a9f573c23627ecd66cb9ae9bdd5)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 475d1f59b3816cdc9b74331daf4ecccc63987f0c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Nov 15 12:47:29 2014 +0200
+
+    SRTP: integer overflow
+    
+    (cherry picked from commit ab9f28ff688eae845bc2deb62bf50072d4a4690b)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 996ff74207a47b6d086c428633db57ebf3eadb6e
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Jan 22 14:45:14 2015 +0100
+
+    Update NEWS for 2.1.6
+
+commit 41c52fbf434d6fc59e1a5e90118b8c924ea6f50d
+Author: Fabian Yamaguchi <fyamagu@gwdg.de>
+Date:   Fri Dec 5 13:58:24 2014 +0100
+
+    stream_out: rtp: don't use VLA for user controlled data
+    
+    It should fix a possible invalid memory access
+    
+    When streaming ogg-files via rtp, an ogg-file can trigger an invalid
+    write access using an overly long 'configuration' string.
+    
+    The original code attemps to allocate space to hold the string on the stack
+    and hence, cannot verify if allocation succeeds. Instead, we now allocate the
+    buffer on the heap and return if allocation fails.
+    
+    In detail, rtp_packetize_xiph_config allocates a buffer on the stack at (1) where
+    the size depends on the local variable 'len'. The variable 'len' is
+    calculated at (0) to be the length of a string contained in a specially
+    crafted Ogg Vorbis file, and therefore, it is attacker-controlled.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 204291467724867b79735c0ee3aeb0dbc2200f97)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    
+    Conflicts:
+    	modules/stream_out/rtpfmt.c
+
+commit 8eab5c92136ffc60873c41c06e7a6a9266e8af7c
+Author: Fabian Yamaguchi <fyamagu@gwdg.de>
+Date:   Fri Dec 5 13:52:42 2014 +0100
+
+    demux: mp4: fix buffer overflow in parsing of string boxes.
+    
+    We ensure that pbox->i_size is never smaller than 8 to avoid an
+    integer underflow in the third argument of the subsequent call to
+    memcpy. We also make sure no truncation occurs when passing values
+    derived from the 64 bit integer p_box->i_size to arguments of malloc
+    and memcpy that may be 32 bit integers on 32 bit platforms.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 2e7c7091a61aa5d07e7997b393d821e91f593c39)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    
+    Conflicts:
+    	modules/demux/mp4/libmp4.c
+
+commit 4e6137bbcd3d74630aa6f0e8b8b5b8aa0c19647d
+Author: Fabian Yamaguchi <fyamagu@gwdg.de>
+Date:   Fri Dec 5 15:37:05 2014 +0100
+
+    codec: dmo: avoid null-pointer dereference.
+    
+    Check the return value of malloc to avoid a null-pointer dereference.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 229c385a79d48e41687fae8b4dfeaeef9c8c3eb7)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a99d9cc2fede1a18140b43ffb59cde37cef7478d
+Author: Fabian Yamaguchi <fyamagu@gwdg.de>
+Date:   Fri Dec 5 15:18:22 2014 +0100
+
+    codec: schroedinger: fix potential buffer overflow.
+    
+    The variable len is a raw 32 bit value read using GetDWBE. If this
+    value is larger than UINT32_MAX - sizeof(eos), this will cause an
+    integer overflow in the subsequent call to malloc, and finally a
+    buffer overflow when calling memcpy. We fix this by checking len
+    accordingly.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 9bb0353a5c63a7f8c6fc853faa3df4b4df1f5eb5)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 9ddfcbb6e5222871de9b2047c939cf1da1fdbe7b
+Author: Fabian Yamaguchi <fyamagu@gwdg.de>
+Date:   Sat Dec 6 13:12:38 2014 +0100
+
+    misc: update: fix buffer overflow in updater
+    
+    On 32 bit builds, parsing of update status files with a size of
+    4294967295 or more lead to an integer truncation in a call to malloc
+    and a subsequent buffer overflow. This happened prior to checking the
+    files' signature. The commit fixes this by disallowing overly large
+    status files (above 65k in practice)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit fbe2837bc80f155c001781041a54c58b5524fc14)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
